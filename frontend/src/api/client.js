@@ -13,9 +13,12 @@ async function request(endpoint, options = {}) {
       },
       ...options,
     });
-  } catch (networkError) {
+  } catch (cause) {
     // Handle network errors (backend unreachable, CORS issues, etc.)
-    throw new Error(`Network error: Unable to connect to server at ${API_BASE_URL}. Please check if the backend is running.`);
+    throw new Error(
+      `Network error: Unable to connect to server at ${API_BASE_URL}. Please check if the backend is running.`,
+      { cause }
+    );
   }
 
   if (!response.ok) {

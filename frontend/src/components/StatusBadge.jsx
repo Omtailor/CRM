@@ -1,16 +1,35 @@
+const STATUS_CONFIG = {
+  Open: {
+    dot: 'bg-red-500',
+    badge: 'bg-red-50 text-red-700 border-red-200',
+    label: 'Open',
+  },
+  'In Progress': {
+    dot: 'bg-amber-500',
+    badge: 'bg-amber-50 text-amber-700 border-amber-200',
+    label: 'In Progress',
+  },
+  Closed: {
+    dot: 'bg-green-500',
+    badge: 'bg-green-50 text-green-700 border-green-200',
+    label: 'Closed',
+  },
+};
+
 function StatusBadge({ status }) {
-  const statusStyles = {
-    'Open': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    'In Progress': 'bg-blue-100 text-blue-800 border-blue-200',
-    'Closed': 'bg-green-100 text-green-800 border-green-200',
+  const config = STATUS_CONFIG[status] || {
+    dot: 'bg-slate-400',
+    badge: 'bg-slate-100 text-slate-600 border-slate-200',
+    label: status,
   };
 
-  const defaultStyle = 'bg-gray-100 text-gray-800 border-gray-200';
-  const style = statusStyles[status] || defaultStyle;
-
   return (
-    <span className={`px-3 py-1 rounded-full text-sm font-medium border ${style}`}>
-      {status}
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${config.badge}`}
+      aria-label={`Status: ${config.label}`}
+    >
+      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${config.dot}`} aria-hidden="true" />
+      {config.label}
     </span>
   );
 }
