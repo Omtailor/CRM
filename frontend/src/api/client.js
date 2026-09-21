@@ -1,15 +1,22 @@
+// Fallback to localhost for development; production should use VITE_API_BASE_URL
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 async function request(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   
-  const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    });
+  } catch (networkError) {
+    // Handle network errors (backend unreachable, CORS issues, etc.)
+    throw new Error(`Network error: Unable to connect to server at ${API_BASE_URL}. Please check if the backend is running.`);
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
