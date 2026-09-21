@@ -1,16 +1,34 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.schemas import TicketCreate, TicketOut, TicketUpdate
+from app.schemas import TicketCreate, TicketUpdate
 from app.crud import create_ticket, get_tickets, get_ticket_by_id, update_ticket
+from app.datetime_utils import format_utc_z
 
 router = APIRouter()
 
-@router.post("/tickets", response_model=TicketOut, status_code=201)
+def _model_to_dict(model):
+    if hasattr(model, "model_dump"):
+        return model.model_dump()
+    return model.dict()
+
+
+@router.post("/tickets", response_model=dict, status_code=201)
 def create_ticket_endpoint(ticket: TicketCreate, db: Session = Depends(get_db)):
     try:
-        db_ticket = create_ticket(db, ticket.model_dump())
-        return db_ticket
+        db_ticket = create_ticket(db, _model_to_dict(ticket))
+        return {
+            "id": db_ticket.id,
+            "ticket_id": db_ticket.ticket_id,
+            "customer_name": db_ticket.customer_name,
+            "customer_email": db_ticket.customer_email,
+            "subject": db_ticket.subject,
+            "description": db_ticket.description,
+            "status": db_ticket.status,
+            "created_at": format_utc_z(db_ticket.created_at),
+            "updated_at": format_utc_z(db_ticket.updated_at),
+            "notes": [],
+        }
     except Exception as e:
         db.rollback()
         raise HTTPException(
@@ -41,7 +59,7 @@ def get_tickets_endpoint(
                 "customer_name": ticket.customer_name,
                 "subject": ticket.subject,
                 "status": ticket.status,
-                "created_at": ticket.created_at.isoformat() if ticket.created_at else None
+                "created_at": format_utc_z(ticket.created_at)
             }
             for ticket in tickets
         ]
@@ -69,7 +87,7 @@ def get_ticket_detail(ticket_id: str, db: Session = Depends(get_db)):
                 "id": note.id,
                 "ticket_id": note.ticket_id,
                 "note_text": note.note_text,
-                "created_at": note.created_at.isoformat() if note.created_at else None
+                "created_at": format_utc_z(note.created_at)
             })
     
     return {
@@ -80,8 +98,8 @@ def get_ticket_detail(ticket_id: str, db: Session = Depends(get_db)):
         "subject": ticket.subject,
         "description": ticket.description,
         "status": ticket.status,
-        "created_at": ticket.created_at.isoformat() if ticket.created_at else None,
-        "updated_at": ticket.updated_at.isoformat() if ticket.updated_at else None,
+        "created_at": format_utc_z(ticket.created_at),
+        "updated_at": format_utc_z(ticket.updated_at),
         "notes": notes_list
     }
 
@@ -103,7 +121,7 @@ def update_ticket_endpoint(ticket_id: str, update_data: TicketUpdate, db: Sessio
         
         return {
             "success": True,
-            "updated_at": updated_ticket.updated_at.isoformat() if updated_ticket.updated_at else None
+            "updated_at": format_utc_z(updated_ticket.updated_at)
         }
     except ValueError as e:
         raise HTTPException(

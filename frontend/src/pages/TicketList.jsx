@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTickets } from '../api/client';
+import { formatDateTime } from '../utils/date';
 import TicketToolbar from '../components/tickets/TicketToolbar';
 import TicketTable from '../components/tickets/TicketTable';
 import TicketCard from '../components/tickets/TicketCard';
@@ -48,17 +49,6 @@ function TicketList() {
     return () => { cancelled = true; };
   }, [debouncedSearch, statusFilter, refreshKey]);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   const hasFilters = Boolean(debouncedSearch || statusFilter);
 
   return (
@@ -96,7 +86,7 @@ function TicketList() {
           <TicketTable
             tickets={tickets}
             onSelectTicket={(ticketId) => navigate(`/tickets/${ticketId}`)}
-            formatDate={formatDate}
+            formatDate={formatDateTime}
           />
 
           {/* Mobile cards */}
@@ -106,7 +96,7 @@ function TicketList() {
                 key={ticket.ticket_id}
                 ticket={ticket}
                 onClick={() => navigate(`/tickets/${ticket.ticket_id}`)}
-                formatDate={formatDate}
+                formatDate={formatDateTime}
               />
             ))}
           </div>

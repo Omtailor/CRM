@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional, List
 
+
 class TicketCreate(BaseModel):
     customer_name: str
     customer_email: EmailStr
@@ -35,7 +36,6 @@ class TicketOut(BaseModel):
 
     class Config:
         from_attributes = True
-
 
 
 class NoteCreate(BaseModel):

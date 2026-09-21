@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getTicket, updateTicket } from '../api/client';
+import { formatDateTime } from '../utils/date';
 import { ArrowLeft } from '../components/icons';
 import TicketDetailSkeleton from '../components/tickets/TicketDetailSkeleton';
 import TicketDetailError from '../components/tickets/TicketDetailError';
@@ -48,17 +49,6 @@ function TicketDetail() {
     run();
     return () => { cancelled = true; };
   }, [ticketId, refreshKey]);
-
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   const handleStatusChange = async (newStatus) => {
     setStatusError('');
@@ -150,7 +140,7 @@ function TicketDetail() {
       </button>
 
       {/* Ticket header */}
-      <TicketDetailHeader ticket={ticket} formatDate={formatDate} />
+      <TicketDetailHeader ticket={ticket} formatDate={formatDateTime} />
 
       {/* Two-column layout: main content + right sidebar */}
       <div className="flex flex-col lg:flex-row gap-5 items-start">
@@ -163,7 +153,7 @@ function TicketDetail() {
           <TicketDescriptionCard description={ticket.description} />
           <TicketNotesSection
             notes={ticket.notes}
-            formatDate={formatDate}
+            formatDate={formatDateTime}
             noteText={noteText}
             onNoteTextChange={(e) => {
               setNoteText(e.target.value);
@@ -188,7 +178,7 @@ function TicketDetail() {
             ticketId={ticket.ticket_id}
             createdAt={ticket.created_at}
             updatedAt={ticket.updated_at}
-            formatDate={formatDate}
+            formatDate={formatDateTime}
           />
         </div>
       </div>
