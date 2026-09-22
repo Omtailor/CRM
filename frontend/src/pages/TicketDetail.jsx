@@ -95,11 +95,11 @@ function TicketDetail() {
     return (
       <div>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/tickets')}
           className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 transition-colors mb-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Tickets
+          Back to Manage Tickets
         </button>
         <TicketDetailSkeleton />
       </div>
@@ -111,15 +111,15 @@ function TicketDetail() {
     return (
       <div>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/tickets')}
           className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 transition-colors mb-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Tickets
+          Back to Manage Tickets
         </button>
         <TicketDetailError
           error={error}
-          onBack={() => navigate('/')}
+          onBack={() => navigate('/tickets')}
           onRetry={retry}
         />
       </div>
@@ -131,12 +131,12 @@ function TicketDetail() {
     <div>
       {/* Back navigation */}
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/tickets')}
         className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 transition-colors mb-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
-        aria-label="Back to tickets list"
+        aria-label="Back to manage tickets"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to Tickets
+        Back to Manage Tickets
       </button>
 
       {/* Ticket header */}

@@ -64,12 +64,12 @@ function CreateTicket() {
     <div className="max-w-2xl mx-auto">
       {/* Back link */}
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/tickets')}
         className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 transition-colors mb-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
-        aria-label="Back to tickets list"
+        aria-label="Back to manage tickets"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to Tickets
+        Back to Manage Tickets
       </button>
 
       {/* Page heading */}
@@ -101,7 +101,7 @@ function CreateTicket() {
         isSubmitting={isSubmitting}
         onChange={handleChange}
         onSubmit={handleSubmit}
-        onCancel={() => navigate('/')}
+        onCancel={() => navigate('/tickets')}
       />
     </div>
   );

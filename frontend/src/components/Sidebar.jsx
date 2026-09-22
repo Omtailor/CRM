@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { TicketIcon, Plus, X } from './icons';
+import { DashboardIcon, TicketIcon, X } from './icons';
 
 function NavItem({ to, icon: Icon, label, active, onClick }) {
   return (
@@ -22,9 +22,9 @@ function NavItem({ to, icon: Icon, label, active, onClick }) {
 function Sidebar({ open, onClose }) {
   const location = useLocation();
 
+  const isDashboardActive = location.pathname === '/';
   const isTicketsActive =
-    location.pathname === '/' || location.pathname.startsWith('/tickets/');
-  const isCreateActive = location.pathname === '/create';
+    location.pathname === '/tickets' || location.pathname.startsWith('/tickets/');
 
   return (
     <>
@@ -69,16 +69,16 @@ function Sidebar({ open, onClose }) {
         <nav className="flex-1 px-3 py-4 space-y-0.5" aria-label="Pages">
           <NavItem
             to="/"
-            icon={TicketIcon}
-            label="Tickets"
-            active={isTicketsActive}
+            icon={DashboardIcon}
+            label="Dashboard"
+            active={isDashboardActive}
             onClick={onClose}
           />
           <NavItem
-            to="/create"
-            icon={Plus}
-            label="Create Ticket"
-            active={isCreateActive}
+            to="/tickets"
+            icon={TicketIcon}
+            label="Manage Tickets"
+            active={isTicketsActive}
             onClick={onClose}
           />
         </nav>

@@ -125,6 +125,17 @@ function TicketIcon({ className = "h-5 w-5" }) {
   );
 }
 
+function DashboardIcon({ className = "h-5 w-5" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="7" height="8" rx="1.5" stroke="currentColor" strokeWidth="2" />
+      <rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" strokeWidth="2" />
+      <rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" strokeWidth="2" />
+      <rect x="3" y="15" width="7" height="6" rx="1.5" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  );
+}
+
 function MessageSquare({ className = "h-4 w-4" }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -168,6 +179,7 @@ export {
   ChevronRight,
   AlertCircle,
   TicketIcon,
+  DashboardIcon,
   MessageSquare,
   InboxIcon,
   RefreshCw,

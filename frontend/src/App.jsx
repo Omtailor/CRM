@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
+import Dashboard from './pages/Dashboard';
 import TicketList from './pages/TicketList';
 import CreateTicket from './pages/CreateTicket';
 import TicketDetail from './pages/TicketDetail';
@@ -18,10 +19,10 @@ function NotFound() {
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
       <Link
-        to="/"
+        to="/tickets"
         className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
       >
-        Back to Tickets
+        Back to Manage Tickets
       </Link>
     </div>
   );
@@ -59,7 +60,8 @@ function App() {
           {/* Page content */}
           <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 w-full max-w-6xl mx-auto">
             <Routes>
-              <Route path="/" element={<TicketList />} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/tickets" element={<TicketList />} />
               <Route path="/create" element={<CreateTicket />} />
               <Route path="/tickets/:ticketId" element={<TicketDetail />} />
               <Route path="*" element={<NotFound />} />
