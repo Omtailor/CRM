@@ -11,6 +11,7 @@ function CreateTicket() {
     customer_email: '',
     subject: '',
     description: '',
+    priority: 'Medium',
   });
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState(null);

@@ -18,6 +18,7 @@ class Ticket(Base):
     subject = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     status = Column(Enum('Open', 'In Progress', 'Closed'), default='Open')
+    priority = Column(String(20), nullable=False, default='Medium')
     created_at = Column(DateTime, default=get_utc_now)
     updated_at = Column(DateTime, default=get_utc_now, onupdate=get_utc_now)
 

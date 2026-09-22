@@ -6,6 +6,8 @@ function TicketToolbar({
   onSearchChange,
   statusFilter,
   onStatusFilterChange,
+  slaFilter,
+  onSlaFilterChange,
   sortOrder,
   onSortOrderChange,
 }) {
@@ -36,6 +38,20 @@ function TicketToolbar({
           <option value="Open">Open</option>
           <option value="In Progress">In Progress</option>
           <option value="Closed">Closed</option>
+        </select>
+      </div>
+
+      {/* SLA filter */}
+      <div className="sm:w-44">
+        <select
+          value={slaFilter}
+          onChange={onSlaFilterChange}
+          aria-label="Filter by SLA"
+          className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer transition-shadow"
+        >
+          <option value="">All SLA</option>
+          <option value="within">Within SLA</option>
+          <option value="breached">SLA Breached</option>
         </select>
       </div>
 

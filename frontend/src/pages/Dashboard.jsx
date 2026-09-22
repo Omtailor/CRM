@@ -16,8 +16,8 @@ const STATUS_STYLES = {
 function DashboardSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {[1, 2, 3, 4].map((item) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+        {[1, 2, 3, 4, 5].map((item) => (
           <div key={item} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
             <div className="h-3 w-24 bg-slate-200 rounded mb-4" />
             <div className="h-8 w-14 bg-slate-200 rounded" />
@@ -80,11 +80,15 @@ function Dashboard() {
       Open: 0,
       'In Progress': 0,
       Closed: 0,
+      breached: 0,
     };
 
     tickets.forEach((ticket) => {
       if (STATUSES.includes(ticket.status)) {
         counts[ticket.status] += 1;
+      }
+      if (ticket.is_breached) {
+        counts.breached += 1;
       }
     });
 
@@ -116,11 +120,12 @@ function Dashboard() {
 
       {!loading && !error && (
         <div className="space-y-6">
-          <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4" aria-label="Ticket summary">
+          <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4" aria-label="Ticket summary">
             <SummaryCard label="Total Tickets" value={stats.total} />
             <SummaryCard label="Open" value={stats.Open} />
             <SummaryCard label="In Progress" value={stats['In Progress']} />
             <SummaryCard label="Closed" value={stats.Closed} />
+            <SummaryCard label="Breaching SLA" value={stats.breached} />
           </section>
 
           <section className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm" aria-labelledby="status-overview-heading">

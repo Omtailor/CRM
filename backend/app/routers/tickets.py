@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas import TicketCreate, TicketUpdate
-from app.crud import create_ticket, get_tickets, get_ticket_by_id, update_ticket
+from app.crud import create_ticket, get_tickets, get_ticket_by_id, update_ticket, normalize_priority, is_sla_breached
 from app.datetime_utils import format_utc_z
 
 router = APIRouter()
@@ -25,6 +25,8 @@ def create_ticket_endpoint(ticket: TicketCreate, db: Session = Depends(get_db)):
             "subject": db_ticket.subject,
             "description": db_ticket.description,
             "status": db_ticket.status,
+            "priority": normalize_priority(db_ticket.priority),
+            "is_breached": is_sla_breached(db_ticket),
             "created_at": format_utc_z(db_ticket.created_at),
             "updated_at": format_utc_z(db_ticket.updated_at),
             "notes": [],
@@ -59,6 +61,8 @@ def get_tickets_endpoint(
                 "customer_name": ticket.customer_name,
                 "subject": ticket.subject,
                 "status": ticket.status,
+                "priority": normalize_priority(ticket.priority),
+                "is_breached": is_sla_breached(ticket),
                 "created_at": format_utc_z(ticket.created_at)
             }
             for ticket in tickets
@@ -98,6 +102,8 @@ def get_ticket_detail(ticket_id: str, db: Session = Depends(get_db)):
         "subject": ticket.subject,
         "description": ticket.description,
         "status": ticket.status,
+        "priority": normalize_priority(ticket.priority),
+        "is_breached": is_sla_breached(ticket),
         "created_at": format_utc_z(ticket.created_at),
         "updated_at": format_utc_z(ticket.updated_at),
         "notes": notes_list
@@ -110,6 +116,7 @@ def update_ticket_endpoint(ticket_id: str, update_data: TicketUpdate, db: Sessio
             db, 
             ticket_id, 
             status=update_data.status, 
+            priority=update_data.priority,
             notes=update_data.notes
         )
         

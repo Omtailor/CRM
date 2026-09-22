@@ -20,6 +20,7 @@ function TicketList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [slaFilter, setSlaFilter] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,16 +56,26 @@ function TicketList() {
     return () => { cancelled = true; };
   }, [debouncedSearch, statusFilter, refreshKey]);
 
-  const hasFilters = Boolean(debouncedSearch || statusFilter);
+  const hasFilters = Boolean(debouncedSearch || statusFilter || slaFilter);
+  const slaFilteredTickets = useMemo(() => {
+    if (slaFilter === 'within') {
+      return tickets.filter((ticket) => !ticket.is_breached);
+    }
+    if (slaFilter === 'breached') {
+      return tickets.filter((ticket) => ticket.is_breached);
+    }
+    return tickets;
+  }, [tickets, slaFilter]);
+
   const sortedTickets = useMemo(() => {
-    return [...tickets].sort((a, b) => {
+    return [...slaFilteredTickets].sort((a, b) => {
       const firstDate = new Date(a.created_at).getTime();
       const secondDate = new Date(b.created_at).getTime();
       return sortOrder === 'newest'
         ? secondDate - firstDate
         : firstDate - secondDate;
     });
-  }, [tickets, sortOrder]);
+  }, [slaFilteredTickets, sortOrder]);
 
   const totalItems = sortedTickets.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
@@ -81,6 +92,11 @@ function TicketList() {
 
   const handleStatusFilterChange = (e) => {
     setStatusFilter(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleSlaFilterChange = (e) => {
+    setSlaFilter(e.target.value);
     setCurrentPage(1);
   };
 
@@ -116,6 +132,8 @@ function TicketList() {
         onSearchChange={handleSearchChange}
         statusFilter={statusFilter}
         onStatusFilterChange={handleStatusFilterChange}
+        slaFilter={slaFilter}
+        onSlaFilterChange={handleSlaFilterChange}
         sortOrder={sortOrder}
         onSortOrderChange={handleSortOrderChange}
       />

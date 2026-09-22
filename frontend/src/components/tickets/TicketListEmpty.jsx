@@ -10,7 +10,7 @@ function TicketListEmpty({ hasFilters }) {
       <p className="text-slate-800 font-semibold text-base mb-1">No tickets found</p>
       <p className="text-slate-500 text-sm max-w-xs">
         {hasFilters
-          ? 'Try clearing your search or changing the status filter.'
+          ? 'Try clearing your search or changing the selected filters.'
           : 'No support tickets have been created yet.'}
       </p>
       {!hasFilters && (

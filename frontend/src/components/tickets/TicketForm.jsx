@@ -65,22 +65,43 @@ function TicketForm({
           </div>
 
           {/* Subject */}
-          <div>
-            <FieldLabel htmlFor="subject" required>
-              Subject
-            </FieldLabel>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              value={formData.subject}
-              onChange={onChange}
-              placeholder="Brief summary of the issue"
-              aria-required="true"
-              className={inputClass(!!errors.subject)}
-              disabled={isSubmitting}
-            />
-            <FieldError message={errors.subject} />
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_11rem] gap-5">
+            <div>
+              <FieldLabel htmlFor="subject" required>
+                Subject
+              </FieldLabel>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={onChange}
+                placeholder="Brief summary of the issue"
+                aria-required="true"
+                className={inputClass(!!errors.subject)}
+                disabled={isSubmitting}
+              />
+              <FieldError message={errors.subject} />
+            </div>
+
+            <div>
+              <FieldLabel htmlFor="priority">
+                Priority
+              </FieldLabel>
+              <select
+                id="priority"
+                name="priority"
+                value={formData.priority}
+                onChange={onChange}
+                className={inputClass(false)}
+                disabled={isSubmitting}
+              >
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Urgent">Urgent</option>
+              </select>
+            </div>
           </div>
 
           {/* Description */}

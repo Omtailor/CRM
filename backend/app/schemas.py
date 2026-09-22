@@ -8,9 +8,11 @@ class TicketCreate(BaseModel):
     customer_email: EmailStr
     subject: str
     description: Optional[str] = None
+    priority: Optional[str] = "Medium"
 
 class TicketUpdate(BaseModel):
     status: Optional[str] = None
+    priority: Optional[str] = None
     notes: Optional[str] = None
 
 class NoteOut(BaseModel):
@@ -30,6 +32,8 @@ class TicketOut(BaseModel):
     subject: str
     description: Optional[str] = None
     status: str
+    priority: str
+    is_breached: bool
     created_at: datetime
     updated_at: datetime
     notes: List[NoteOut] = []

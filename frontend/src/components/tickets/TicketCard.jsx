@@ -1,4 +1,6 @@
 import StatusBadge from '../StatusBadge';
+import PriorityBadge from '../PriorityBadge';
+import SlaBadge from '../SlaBadge';
 
 function TicketCard({ ticket, onClick, formatDate }) {
   return (
@@ -14,6 +16,10 @@ function TicketCard({ ticket, onClick, formatDate }) {
           #{ticket.ticket_id}
         </span>
         <StatusBadge status={ticket.status} />
+      </div>
+      <div className="flex flex-wrap items-center gap-2 mb-2">
+        <PriorityBadge priority={ticket.priority} />
+        {ticket.is_breached && <SlaBadge isBreached={ticket.is_breached} />}
       </div>
       <p className="text-sm font-medium text-slate-900 mb-1 leading-snug">{ticket.subject}</p>
       <p className="text-xs text-slate-500">

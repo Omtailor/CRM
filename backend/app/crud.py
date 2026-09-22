@@ -1,8 +1,33 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.models import Ticket, Note
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
+
+VALID_PRIORITIES = ("Low", "Medium", "High", "Urgent")
+DEFAULT_PRIORITY = "Medium"
+SLA_THRESHOLDS = {
+    "Urgent": timedelta(hours=4),
+    "High": timedelta(hours=24),
+    "Medium": timedelta(hours=48),
+    "Low": timedelta(hours=72),
+}
+
+def normalize_priority(priority: str = None) -> str:
+    if priority in VALID_PRIORITIES:
+        return priority
+    return DEFAULT_PRIORITY
+
+def is_sla_breached(ticket: Ticket) -> bool:
+    if ticket.status == "Closed":
+        return False
+
+    created_at = ticket.created_at
+    if not created_at:
+        return False
+
+    priority = normalize_priority(getattr(ticket, "priority", None))
+    return datetime.utcnow() - created_at > SLA_THRESHOLDS[priority]
 
 def generate_ticket_id(db: Session) -> str:
     # Get the highest existing ticket_id
@@ -32,7 +57,8 @@ def create_ticket(db: Session, ticket_data: dict) -> Ticket:
         customer_email=ticket_data["customer_email"],
         subject=ticket_data["subject"],
         description=ticket_data.get("description"),
-        status="Open"
+        status="Open",
+        priority=normalize_priority(ticket_data.get("priority"))
     )
     
     db.add(db_ticket)
@@ -78,7 +104,7 @@ def get_ticket_by_id(db: Session, ticket_id: str):
     
     return ticket
 
-def update_ticket(db: Session, ticket_id: str, status: str = None, notes: str = None):
+def update_ticket(db: Session, ticket_id: str, status: str = None, priority: str = None, notes: str = None):
     # Fetch the ticket
     ticket = db.query(Ticket).filter(Ticket.ticket_id == ticket_id).first()
     
@@ -93,6 +119,10 @@ def update_ticket(db: Session, ticket_id: str, status: str = None, notes: str = 
         if status not in valid_statuses:
             raise ValueError(f"Invalid status. Must be one of: {', '.join(valid_statuses)}")
         ticket.status = status
+        made_changes = True
+
+    if priority is not None:
+        ticket.priority = normalize_priority(priority)
         made_changes = True
     
     # Add note if provided (non-empty string after stripping whitespace)

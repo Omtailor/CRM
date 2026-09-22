@@ -1,4 +1,6 @@
 import StatusBadge from '../StatusBadge';
+import PriorityBadge from '../PriorityBadge';
+import SlaBadge from '../SlaBadge';
 
 function TicketTable({ tickets, onSelectTicket, formatDate }) {
   return (
@@ -18,6 +20,9 @@ function TicketTable({ tickets, onSelectTicket, formatDate }) {
               </th>
               <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Status
+              </th>
+              <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Priority
               </th>
               <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Created
@@ -51,6 +56,12 @@ function TicketTable({ tickets, onSelectTicket, formatDate }) {
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
                   <StatusBadge status={ticket.status} />
+                </td>
+                <td className="px-5 py-4 whitespace-nowrap">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <PriorityBadge priority={ticket.priority} />
+                    {ticket.is_breached && <SlaBadge isBreached={ticket.is_breached} />}
+                  </div>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
                   <span className="text-sm text-slate-500">

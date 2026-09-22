@@ -1,4 +1,6 @@
 import StatusBadge from '../StatusBadge';
+import PriorityBadge from '../PriorityBadge';
+import SlaBadge from '../SlaBadge';
 
 function TicketDetailHeader({ ticket, formatDate }) {
   return (
@@ -10,6 +12,8 @@ function TicketDetailHeader({ ticket, formatDate }) {
               #{ticket.ticket_id}
             </span>
             <StatusBadge status={ticket.status} />
+            <PriorityBadge priority={ticket.priority} />
+            {ticket.is_breached && <SlaBadge isBreached={ticket.is_breached} />}
           </div>
           <h1 className="text-xl font-bold text-slate-900 leading-tight">{ticket.subject}</h1>
           <p className="text-sm text-slate-400 mt-1">

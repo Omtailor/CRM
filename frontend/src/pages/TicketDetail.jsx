@@ -10,6 +10,7 @@ import CustomerInfoCard from '../components/tickets/CustomerInfoCard';
 import TicketDescriptionCard from '../components/tickets/TicketDescriptionCard';
 import TicketNotesSection from '../components/tickets/TicketNotesSection';
 import TicketStatusCard from '../components/tickets/TicketStatusCard';
+import TicketPriorityCard from '../components/tickets/TicketPriorityCard';
 import TicketMetadataCard from '../components/tickets/TicketMetadataCard';
 
 function TicketDetail() {
@@ -20,11 +21,14 @@ function TicketDetail() {
   const [error, setError] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isUpdatingPriority, setIsUpdatingPriority] = useState(false);
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [noteText, setNoteText] = useState('');
   const [noteError, setNoteError] = useState('');
   const [statusError, setStatusError] = useState('');
   const [statusSaved, setStatusSaved] = useState(false);
+  const [priorityError, setPriorityError] = useState('');
+  const [prioritySaved, setPrioritySaved] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -64,6 +68,23 @@ function TicketDetail() {
       setStatusError(err.message || 'Failed to update status');
     } finally {
       setIsUpdatingStatus(false);
+    }
+  };
+
+  const handlePriorityChange = async (newPriority) => {
+    setPriorityError('');
+    setPrioritySaved(false);
+    setIsUpdatingPriority(true);
+    try {
+      await updateTicket(ticketId, { priority: newPriority });
+      const updatedTicket = await getTicket(ticketId);
+      setTicket(updatedTicket);
+      setPrioritySaved(true);
+      setTimeout(() => setPrioritySaved(false), 2000);
+    } catch (err) {
+      setPriorityError(err.message || 'Failed to update priority');
+    } finally {
+      setIsUpdatingPriority(false);
     }
   };
 
@@ -173,6 +194,14 @@ function TicketDetail() {
             isUpdatingStatus={isUpdatingStatus}
             statusSaved={statusSaved}
             statusError={statusError}
+          />
+          <TicketPriorityCard
+            priority={ticket.priority}
+            isBreached={ticket.is_breached}
+            onPriorityChange={handlePriorityChange}
+            isUpdatingPriority={isUpdatingPriority}
+            prioritySaved={prioritySaved}
+            priorityError={priorityError}
           />
           <TicketMetadataCard
             ticketId={ticket.ticket_id}

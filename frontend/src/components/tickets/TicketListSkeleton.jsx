@@ -14,6 +14,9 @@ function SkeletonRow() {
         <div className="h-5 bg-slate-200 rounded-full w-20" />
       </td>
       <td className="px-5 py-4">
+        <div className="h-5 bg-slate-200 rounded-full w-24" />
+      </td>
+      <td className="px-5 py-4">
         <div className="h-3.5 bg-slate-200 rounded w-32" />
       </td>
       <td className="px-5 py-4">
@@ -44,7 +47,7 @@ function TicketListSkeleton() {
         <table className="w-full">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
-              {['Ticket ID', 'Customer', 'Subject', 'Status', 'Created', 'Action'].map((h) => (
+              {['Ticket ID', 'Customer', 'Subject', 'Status', 'Priority', 'Created', 'Action'].map((h) => (
                 <th
                   key={h}
                   className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"

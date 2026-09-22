@@ -6,6 +6,7 @@ CREATE TABLE tickets (
     subject VARCHAR(255) NOT NULL,
     description TEXT,
     status ENUM('Open', 'In Progress', 'Closed') DEFAULT 'Open',
+    priority VARCHAR(20) NOT NULL DEFAULT 'Medium',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_status (status),
