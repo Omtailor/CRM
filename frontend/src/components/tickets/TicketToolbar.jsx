@@ -6,9 +6,11 @@ function TicketToolbar({
   onSearchChange,
   statusFilter,
   onStatusFilterChange,
+  sortOrder,
+  onSortOrderChange,
 }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-3 mb-5">
+    <div className="flex flex-col lg:flex-row gap-3 mb-5">
       {/* Search */}
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
@@ -34,6 +36,19 @@ function TicketToolbar({
           <option value="Open">Open</option>
           <option value="In Progress">In Progress</option>
           <option value="Closed">Closed</option>
+        </select>
+      </div>
+
+      {/* Sort */}
+      <div className="sm:w-44">
+        <select
+          value={sortOrder}
+          onChange={onSortOrderChange}
+          aria-label="Sort by creation date"
+          className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer transition-shadow"
+        >
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
         </select>
       </div>
 
