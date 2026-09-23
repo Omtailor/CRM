@@ -57,3 +57,9 @@ export async function updateTicket(ticketId, payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export async function deleteTicket(ticketId) {
+  return request(`/api/tickets/${ticketId}`, {
+    method: 'DELETE',
+  });
+}

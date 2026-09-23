@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas import TicketCreate, TicketUpdate
-from app.crud import create_ticket, get_tickets, get_ticket_by_id, update_ticket, normalize_priority, is_sla_breached
+from app.crud import create_ticket, get_tickets, get_ticket_by_id, update_ticket, delete_ticket, normalize_priority, is_sla_breached
 from app.datetime_utils import format_utc_z
 
 router = APIRouter()
@@ -108,6 +108,26 @@ def get_ticket_detail(ticket_id: str, db: Session = Depends(get_db)):
         "updated_at": format_utc_z(ticket.updated_at),
         "notes": notes_list
     }
+
+@router.delete("/tickets/{ticket_id}", response_model=dict)
+def delete_ticket_endpoint(ticket_id: str, db: Session = Depends(get_db)):
+    try:
+        deleted = delete_ticket(db, ticket_id)
+        if not deleted:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Ticket with ID {ticket_id} not found"
+            )
+        return {"success": True, "ticket_id": ticket_id}
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to delete ticket: {str(e)}"
+        )
+
 
 @router.put("/tickets/{ticket_id}", response_model=dict)
 def update_ticket_endpoint(ticket_id: str, update_data: TicketUpdate, db: Session = Depends(get_db)):

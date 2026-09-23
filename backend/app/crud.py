@@ -104,6 +104,23 @@ def get_ticket_by_id(db: Session, ticket_id: str):
     
     return ticket
 
+def delete_ticket(db: Session, ticket_id: str) -> bool:
+    """Delete a ticket and its associated notes.
+
+    SQLAlchemy's cascade="all, delete-orphan" on Ticket.notes handles note
+    deletion automatically via the ORM.  The DB-level ondelete="CASCADE" on
+    the notes FK acts as an additional safety net.
+
+    Returns True if the ticket was found and deleted, False if not found.
+    """
+    ticket = db.query(Ticket).filter(Ticket.ticket_id == ticket_id).first()
+    if not ticket:
+        return False
+    db.delete(ticket)
+    db.commit()
+    return True
+
+
 def update_ticket(db: Session, ticket_id: str, status: str = None, priority: str = None, notes: str = None):
     # Fetch the ticket
     ticket = db.query(Ticket).filter(Ticket.ticket_id == ticket_id).first()

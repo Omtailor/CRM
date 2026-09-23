@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getTicket, updateTicket } from '../api/client';
+import { getTicket, updateTicket, deleteTicket } from '../api/client';
 import { formatDateTime } from '../utils/date';
 import { ArrowLeft } from '../components/icons';
 import TicketDetailSkeleton from '../components/tickets/TicketDetailSkeleton';
@@ -12,6 +12,8 @@ import TicketNotesSection from '../components/tickets/TicketNotesSection';
 import TicketStatusCard from '../components/tickets/TicketStatusCard';
 import TicketPriorityCard from '../components/tickets/TicketPriorityCard';
 import TicketMetadataCard from '../components/tickets/TicketMetadataCard';
+import DeleteTicketCard from '../components/tickets/DeleteTicketCard';
+import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
 
 function TicketDetail() {
   const { ticketId } = useParams();
@@ -29,6 +31,9 @@ function TicketDetail() {
   const [statusSaved, setStatusSaved] = useState(false);
   const [priorityError, setPriorityError] = useState('');
   const [prioritySaved, setPrioritySaved] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -110,6 +115,39 @@ function TicketDetail() {
   };
 
   const retry = () => setRefreshKey((k) => k + 1);
+
+  const handleDeleteClick = () => {
+    setDeleteError('');
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteCancel = () => {
+    if (isDeleting) return; // prevent closing while in flight
+    setShowDeleteModal(false);
+    setDeleteError('');
+  };
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true);
+    setDeleteError('');
+    try {
+      await deleteTicket(ticketId);
+      // Success: navigate back to the ticket list
+      navigate('/tickets');
+    } catch (err) {
+      const isNotFound =
+        err.message.toLowerCase().includes('not found') ||
+        err.message.includes('404');
+      if (isNotFound) {
+        // Ticket is already gone — navigate to list
+        navigate('/tickets');
+      } else {
+        // Non-fatal error: show inside modal, let user retry or cancel
+        setDeleteError(err.message || 'Failed to delete ticket. Please try again.');
+        setIsDeleting(false);
+      }
+    }
+  };
 
   /* ── Loading state ── */
   if (loading) {
@@ -209,8 +247,20 @@ function TicketDetail() {
             updatedAt={ticket.updated_at}
             formatDate={formatDateTime}
           />
+          <DeleteTicketCard onDeleteClick={handleDeleteClick} />
         </div>
       </div>
+
+      {/* Confirmation modal — rendered at this level so it sits above all page content */}
+      {showDeleteModal && (
+        <ConfirmDeleteModal
+          ticketId={ticket.ticket_id}
+          isDeleting={isDeleting}
+          error={deleteError}
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+        />
+      )}
     </div>
   );
 }
