@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.models import Ticket, Note
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import re
 
 VALID_PRIORITIES = ("Low", "Medium", "High", "Urgent")
@@ -27,7 +27,7 @@ def is_sla_breached(ticket: Ticket) -> bool:
         return False
 
     priority = normalize_priority(getattr(ticket, "priority", None))
-    return datetime.utcnow() - created_at > SLA_THRESHOLDS[priority]
+    return datetime.now(timezone.utc) - created_at > SLA_THRESHOLDS[priority]
 
 def generate_ticket_id(db: Session) -> str:
     # Get the highest existing ticket_id
@@ -136,7 +136,7 @@ def update_ticket(db: Session, ticket_id: str, status: str = None, priority: str
     
     # Update the updated_at timestamp only if changes were made
     if made_changes:
-        ticket.updated_at = datetime.utcnow()
+        ticket.updated_at = datetime.now(timezone.utc)
     
     # Commit changes
     db.commit()
